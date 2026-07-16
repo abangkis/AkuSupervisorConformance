@@ -203,6 +203,52 @@ function Wait-ApplicationHealth {
     throw "fixture application health did not become ready: $lastError"
 }
 
+function Get-ProcessThreadDiagnostic {
+    param([int]$ProcessId)
+
+    try {
+        $process = Get-Process -Id $ProcessId -ErrorAction Stop
+        $commandLine = $null
+        $executablePath = $null
+        try {
+            $processRecord = Get-CimInstance Win32_Process -Filter "ProcessId = $ProcessId" `
+                -ErrorAction Stop
+            $commandLine = $processRecord.CommandLine
+            $executablePath = $processRecord.ExecutablePath
+        }
+        catch {}
+        $threads = @($process.Threads | ForEach-Object {
+            $thread = $_
+            $waitReason = $null
+            $startTimeUtc = $null
+            $totalProcessorTimeMs = $null
+            try { $waitReason = $thread.WaitReason.ToString() } catch {}
+            try { $startTimeUtc = $thread.StartTime.ToUniversalTime().ToString("o") } catch {}
+            try { $totalProcessorTimeMs = [int64]$thread.TotalProcessorTime.TotalMilliseconds } catch {}
+            [ordered]@{
+                id = $thread.Id
+                state = $thread.ThreadState.ToString()
+                waitReason = $waitReason
+                startTimeUtc = $startTimeUtc
+                totalProcessorTimeMs = $totalProcessorTimeMs
+            }
+        })
+        return [ordered]@{
+            processId = $ProcessId
+            executablePath = $executablePath
+            commandLine = $commandLine
+            totalProcessorTimeMs = [int64]$process.TotalProcessorTime.TotalMilliseconds
+            threads = $threads
+        }
+    }
+    catch {
+        return [ordered]@{
+            processId = $ProcessId
+            error = $_.Exception.Message
+        }
+    }
+}
+
 function Start-IsolatedSupervisor {
     $startInfo = New-Object System.Diagnostics.ProcessStartInfo
     $startInfo.FileName = $script:SupervisorExecutable
@@ -443,6 +489,8 @@ try {
             -Actual $applicationHealthStatus -Detail "the runner independently reached the fixture readiness endpoint"
     }
     catch {
+        $script:Evidence.applicationHealthFailureProcess = Get-ProcessThreadDiagnostic `
+            -ProcessId $serviceStatus.rootPid
         Add-Check -Id "application_health_reached" -Status "failed" -Expected 200 `
             -Actual $_.Exception.Message `
             -Detail "the owned process existed, but its application entrypoint did not become reachable"

@@ -2,34 +2,39 @@
 
 ## Node application-owned / Windows
 
-Status: **candidate; deterministic gate passes, native gate correctly fails**.
+Status: **maintained for Windows; deterministic and native gates pass**.
 
-The initial Windows run on 2026-07-17 used:
+The passing Windows run on 2026-07-17 used:
 
 - AkuSupervisor `0.1.0`, development binary SHA-256
-  `0fdae35de0e4a727cc4ede33ac448cb78f78296226b308bc15c84abf16b94bca`;
+  `351d4fd7d0455344e46f586c82db3b6790bdbfffbe444d4cd35a4416127aa3e9`;
 - Node.js `v24.16.0` at the selected NVM executable; and
-- fixture contract version `1`.
+- fixture contract version `1`, conformance version `0.1.0`, run ID
+  `20260716T230951718Z-33932`.
 
 The deterministic application test passed idempotent shutdown, active-request
-draining, resource cleanup, and listener release. The native run then exposed a
-real Windows startup defect before certification:
+draining, resource cleanup, and listener release. The native run also proved:
 
-- AkuSupervisor owned one Node PID and process health was `healthy`;
-- the Node entrypoint emitted no `server_ready` event and opened no listener;
-- Ctrl+Break was reported as sent and the owned tree became empty without
-  forced fallback; but
-- no application shutdown event or observed `SIGBREAK` existed.
+- the independent `/health` endpoint became reachable;
+- AkuSupervisor delivered Ctrl+Break and the application observed `SIGBREAK`;
+- every required application cleanup event was logged;
+- the process exited without forced fallback and left an empty owned tree;
+- the listener port was released; and
+- an unrelated sentinel process remained running.
 
-Therefore `forced: false` was correctly rejected as sufficient recipe evidence.
-The current Windows process adapter starts a child with `CREATE_SUSPENDED`,
-enumerates threads by PID, resumes the first matching thread, and accepts a
-`ResumeThread` return value of zero. Zero means that selected thread was not
-suspended. With an EDR/antivirus-injected thread present, this can leave the
-actual primary thread suspended while reporting a successful spawn. The run
-behavior and code path are consistent with that race; the core fix and a
-passing rerun remain required before changing this tuple to `maintained`.
+The earlier failed run remains useful diagnostic history. Two Windows launch
+boundaries had been conflated: Rust's `Command::spawn` discarded the primary
+thread handle returned by `CreateProcessW`, forcing the Supervisor to infer a
+thread from a process-wide snapshot; and the service inherited the
+Supervisor's redirected stdin pipe. The corrected native executable path keeps
+the real primary-thread handle, removes exactly the Supervisor-owned suspend
+count after Job assignment, captures stdout/stderr through bounded log pipes,
+and gives the non-interactive service an inherited `NUL` stdin handle. It does
+not enumerate or resume antivirus/EDR-owned threads.
+
+This maintained claim is scoped to the Node application-owned fixture on
+Windows. It does not imply Linux or macOS certification and does not turn the
+conformance repository into a core build or stable-promotion dependency.
 
 Generated reports remain local under `.artifacts/reports` and are ignored by
 Git. This document retains only the reviewed, non-secret conclusion.
-
