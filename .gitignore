@@ -1,0 +1,56 @@
+# AkuSupervisorConformance run output. This directory can contain generated
+# configurations, lifecycle journals, control tokens, service logs, and local
+# machine paths. Curated evidence must be reviewed and copied elsewhere first.
+/.artifacts/
+
+# Runtime state and credentials must never be committed, even if a fixture is
+# executed outside the canonical runner directory.
+**/.runtime/
+**/control-token
+
+# Local environment and secret-bearing overrides. Keep a documented template.
+.env
+.env.*
+!.env.example
+*.local
+
+# Runtime-specific dependency and build output. Lock files remain trackable.
+node_modules/
+coverage/
+.nyc_output/
+target/
+.gradle/
+.kotlin/
+build/
+out/
+*.class
+*.test
+coverage.out
+
+# Runtime/tool diagnostics.
+*.log
+*.dmp
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+hs_err_pid*.log
+replay_pid*.log
+
+# Editors and operating systems. Selected VS Code project configuration can
+# still be committed when it helps contributors run the conformance suite.
+.idea/
+*.iml
+.vscode/*
+!.vscode/extensions.json
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+*.swp
+*.swo
+*~
+.DS_Store
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+$RECYCLE.BIN/

@@ -1,0 +1,68 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://aku.local/conformance/schemas/fixture-manifest.schema.json",
+  "title": "AkuSupervisor conformance fixture manifest",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schemaVersion",
+    "id",
+    "contractVersion",
+    "runtime",
+    "supportedPlatforms",
+    "service",
+    "expectedEvidence"
+  ],
+  "properties": {
+    "schemaVersion": { "const": 1 },
+    "id": { "type": "string", "pattern": "^[a-z0-9-]+$" },
+    "contractVersion": { "type": "integer", "minimum": 1 },
+    "runtime": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "minimumVersion", "executableHint"],
+      "properties": {
+        "id": { "type": "string", "pattern": "^[a-z0-9-]+$" },
+        "minimumVersion": { "type": "string", "minLength": 1 },
+        "executableHint": { "type": "string", "minLength": 1 }
+      }
+    },
+    "supportedPlatforms": {
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": { "enum": ["windows", "linux", "macos"] }
+    },
+    "service": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "entrypoint",
+        "healthPath",
+        "applicationShutdownMs",
+        "supervisorShutdownGraceMs"
+      ],
+      "properties": {
+        "entrypoint": { "type": "string", "minLength": 1 },
+        "healthPath": { "type": "string", "pattern": "^/" },
+        "applicationShutdownMs": { "type": "integer", "minimum": 1 },
+        "supervisorShutdownGraceMs": { "type": "integer", "minimum": 1 }
+      }
+    },
+    "expectedEvidence": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["windowsSignal", "applicationEvents"],
+      "properties": {
+        "windowsSignal": { "type": "string", "minLength": 1 },
+        "applicationEvents": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": { "type": "string", "minLength": 1 }
+        }
+      }
+    }
+  }
+}
+

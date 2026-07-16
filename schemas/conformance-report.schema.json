@@ -1,0 +1,91 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://aku.local/conformance/schemas/conformance-report.schema.json",
+  "title": "AkuSupervisor conformance report",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schemaVersion",
+    "conformanceVersion",
+    "runId",
+    "startedAtUtc",
+    "completedAtUtc",
+    "status",
+    "exitCode",
+    "supervisor",
+    "host",
+    "runtime",
+    "fixture",
+    "checks",
+    "evidence"
+  ],
+  "properties": {
+    "schemaVersion": { "const": 1 },
+    "conformanceVersion": { "type": "string", "minLength": 1 },
+    "runId": { "type": "string", "minLength": 1 },
+    "startedAtUtc": { "type": "string", "format": "date-time" },
+    "completedAtUtc": { "type": "string", "format": "date-time" },
+    "status": { "enum": ["passed", "failed", "skipped"] },
+    "exitCode": { "enum": [0, 1, 2] },
+    "supervisor": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["path", "version", "sha256"],
+      "properties": {
+        "path": { "type": "string" },
+        "version": { "type": ["string", "null"] },
+        "sha256": { "type": ["string", "null"] }
+      }
+    },
+    "host": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["os", "architecture", "powershellVersion"],
+      "properties": {
+        "os": { "enum": ["windows", "linux", "macos", "unknown"] },
+        "architecture": { "type": "string" },
+        "powershellVersion": { "type": "string" }
+      }
+    },
+    "runtime": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "path", "version"],
+      "properties": {
+        "id": { "type": "string" },
+        "path": { "type": ["string", "null"] },
+        "version": { "type": ["string", "null"] }
+      }
+    },
+    "fixture": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "contractVersion", "manifestPath"],
+      "properties": {
+        "id": { "type": "string" },
+        "contractVersion": { "type": "integer" },
+        "manifestPath": { "type": "string" }
+      }
+    },
+    "checks": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "status", "expected", "actual", "detail"],
+        "properties": {
+          "id": { "type": "string" },
+          "status": { "enum": ["passed", "failed", "skipped"] },
+          "expected": {},
+          "actual": {},
+          "detail": { "type": "string" }
+        }
+      }
+    },
+    "evidence": {
+      "type": "object",
+      "additionalProperties": true
+    }
+  }
+}
+

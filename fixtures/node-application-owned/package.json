@@ -1,0 +1,13 @@
+{
+  "name": "aku-supervisor-conformance-node-application-owned",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "test": "node test/application.test.mjs",
+    "start": "node src/server.mjs"
+  }
+}

@@ -1,0 +1,28 @@
+{
+  "$schema": "../../schemas/fixture-manifest.schema.json",
+  "schemaVersion": 1,
+  "id": "node-application-owned",
+  "contractVersion": 1,
+  "runtime": {
+    "id": "node",
+    "minimumVersion": "20.0.0",
+    "executableHint": "node"
+  },
+  "supportedPlatforms": ["windows"],
+  "service": {
+    "entrypoint": "src/server.mjs",
+    "healthPath": "/health",
+    "applicationShutdownMs": 4000,
+    "supervisorShutdownGraceMs": 6000
+  },
+  "expectedEvidence": {
+    "windowsSignal": "SIGBREAK",
+    "applicationEvents": [
+      "server_ready",
+      "shutdown_started",
+      "resource_cleanup_completed",
+      "shutdown_completed"
+    ]
+  }
+}
+
