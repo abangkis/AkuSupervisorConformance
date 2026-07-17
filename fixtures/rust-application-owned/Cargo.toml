@@ -1,0 +1,13 @@
+[package]
+name = "rust-application-owned"
+version = "0.1.0"
+edition = "2024"
+rust-version = "1.97"
+publish = false
+
+[lib]
+path = "src/lib.rs"
+
+[[bin]]
+name = "rust-application-owned"
+path = "src/main.rs"

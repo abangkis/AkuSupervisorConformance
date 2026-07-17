@@ -20,9 +20,9 @@ Every application-owned runtime fixture must prove:
 8. the declared listener port was released; and
 9. a process outside the Supervisor ownership boundary remained alive.
 
-The Node fixture additionally records `resource_cleanup_completed`. This makes
-`forced: false` insufficient on its own: the application must prove that its
-handler and declared cleanup path ran.
+Every maintained application-owned fixture currently records
+`resource_cleanup_completed`. This makes `forced: false` insufficient on its
+own: the application must prove that its handler and declared cleanup path ran.
 
 Process health inside AkuSupervisor and application readiness in the runner are
 separate on purpose. This suite certifies cooperative shutdown, not the
@@ -44,6 +44,8 @@ sharing outside its originating environment.
 
 - Increment the fixture `contractVersion` when observable behavior or required
   evidence changes.
+- Report schema version `2` identifies the Rust runner through `host.runner`
+  and removes the old PowerShell-engine field.
 - Increment the report `schemaVersion` only for a breaking report shape.
 - Record both project versions and the AkuSupervisor binary SHA-256 in every
   native report.

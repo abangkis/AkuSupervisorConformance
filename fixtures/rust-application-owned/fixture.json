@@ -1,0 +1,27 @@
+{
+  "$schema": "../../schemas/fixture-manifest.schema.json",
+  "schemaVersion": 1,
+  "id": "rust-application-owned",
+  "contractVersion": 1,
+  "runtime": {
+    "id": "rust",
+    "minimumVersion": "1.97.0",
+    "executableHint": "cargo"
+  },
+  "supportedPlatforms": ["windows"],
+  "service": {
+    "entrypoint": "src/main.rs",
+    "healthPath": "/health",
+    "applicationShutdownMs": 4000,
+    "supervisorShutdownGraceMs": 6000
+  },
+  "expectedEvidence": {
+    "windowsSignal": "CTRL_BREAK_EVENT",
+    "applicationEvents": [
+      "server_ready",
+      "shutdown_started",
+      "resource_cleanup_completed",
+      "shutdown_completed"
+    ]
+  }
+}

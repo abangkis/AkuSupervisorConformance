@@ -20,7 +20,7 @@
     "evidence"
   ],
   "properties": {
-    "schemaVersion": { "const": 1 },
+    "schemaVersion": { "const": 2 },
     "conformanceVersion": { "type": "string", "minLength": 1 },
     "runId": { "type": "string", "minLength": 1 },
     "startedAtUtc": { "type": "string", "format": "date-time" },
@@ -40,11 +40,11 @@
     "host": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["os", "architecture", "powershellVersion"],
+      "required": ["os", "architecture", "runner"],
       "properties": {
         "os": { "enum": ["windows", "linux", "macos", "unknown"] },
         "architecture": { "type": "string" },
-        "powershellVersion": { "type": "string" }
+        "runner": { "const": "rust" }
       }
     },
     "runtime": {
@@ -88,4 +88,3 @@
     }
   }
 }
-

@@ -1,0 +1,27 @@
+{
+  "$schema": "../../schemas/fixture-manifest.schema.json",
+  "schemaVersion": 1,
+  "id": "go-application-owned",
+  "contractVersion": 1,
+  "runtime": {
+    "id": "go",
+    "minimumVersion": "1.21.0",
+    "executableHint": "go"
+  },
+  "supportedPlatforms": ["windows"],
+  "service": {
+    "entrypoint": "cmd/server",
+    "healthPath": "/health",
+    "applicationShutdownMs": 4000,
+    "supervisorShutdownGraceMs": 6000
+  },
+  "expectedEvidence": {
+    "windowsSignal": "SIGINT",
+    "applicationEvents": [
+      "server_ready",
+      "shutdown_started",
+      "resource_cleanup_completed",
+      "shutdown_completed"
+    ]
+  }
+}
