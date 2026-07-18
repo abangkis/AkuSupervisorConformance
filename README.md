@@ -5,6 +5,10 @@ AkuSupervisor-managed application runtimes. It is deliberately a separate
 project: installing, building, and running AkuSupervisor does not require this
 repository or any runtime represented by its fixtures.
 
+The `v0.7.0-preview.1` tag marks the conformance state paired with the same
+AkuWorkspace preview checkpoint. This laboratory is not part of the
+`0.7.0-preview.1` end-user bundle.
+
 The manifest-driven native runner is written in Rust. Node.js, Go, and managed
 Rust applications are opt-in fixture dependencies, not implementation
 languages of the conformance engine and not dependencies of AkuSupervisor.
