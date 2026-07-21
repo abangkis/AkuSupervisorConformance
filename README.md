@@ -15,6 +15,15 @@ languages of the conformance engine and not dependencies of AkuSupervisor.
 All three application-owned fixtures are maintained for the current Windows
 adapter after passing the same deterministic and native gates.
 
+## OpenAI Build Week supporting role
+
+AkuSupervisorConformance is supporting validation evidence, not an AkuBrowser
+runtime component and not part of the portable preview. During Build Week it
+helped verify that Supervisor lifecycle behavior remains generic across
+application-owned Node.js, Go, and Rust shutdown contracts. See the
+[final project story](https://github.com/abangkis/AkuBrowser/blob/main/docs/openai-build-week-submission.md)
+and [Build Week evidence](https://github.com/abangkis/AkuBrowser/blob/main/BUILD_WEEK.md).
+
 ## Boundaries
 
 - AkuSupervisor owns generic process supervision, native signals, bounded
